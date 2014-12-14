@@ -1,0 +1,65 @@
+/* -- Bytecode dump format ------------------------------------------------ */
+
+/*
+** dump   = header proto+ 0U
+** header = ESC 'L' 'J' versionB flagsU [namelenU nameB*]
+** proto  = lengthU pdata
+** pdata  = phead bcinsW* uvdataH* kgc* knum* [debugB*]
+** phead  = flagsB numparamsB framesizeB numuvB numkgcU numknU numbcU
+**          [debuglenU [firstlineU numlineU]]
+** kgc    = kgctypeU { ktab | (loU hiU) | (rloU rhiU iloU ihiU) | strB* }
+** knum   = intU0 | (loU1 hiU)
+** ktab   = narrayU nhashU karray* khash*
+** karray = ktabk
+** khash  = ktabk ktabk
+** ktabk  = ktabtypeU { intU | (loU hiU) | strB* }
+**
+** B = 8 bit, H = 16 bit, W = 32 bit, U = ULEB128 of W, U0/U1 = ULEB128 of W+1
+*/
+
+
+/* Bytecode dump header. */
+#define BCDUMP_HEAD1		0x1b
+#define BCDUMP_HEAD2		0x4c
+#define BCDUMP_HEAD3		0x4a
+
+/* If you perform *any* kind of private modifications to the bytecode itself
+** or to the dump format, you *must* set BCDUMP_VERSION to 0x80 or higher.
+*/
+#define BCDUMP_VERSION		1
+
+/* Compatibility flags. */
+#define BCDUMP_F_BE		0x01
+#define BCDUMP_F_STRIP		0x02
+#define BCDUMP_F_FFI		0x04
+
+#define BCDUMP_F_KNOWN		(BCDUMP_F_FFI*2-1)
+
+====================
+(byte) 0x1b
+(byte) 0x4c
+(byte) 0x4a
+(byte) version 1
+-------------
+(uleb128) flags
+(uleb128) length	optional (if stripped flag is unset)
+(bytes[length]) chunkname optional (if stripped flag is unset)
+=====================
+(uleb128) len
+(byte) flags
+(byte) numparams
+(byte) framesize
+(byte) sizeuv
+(uleb128) sizekgc
+(uleb128) sizekn
+(uleb128) sizebc - 1
+(uleb128) sizedbg optional (if not stripped - proto header flags)
+(uleb128) firstline optional (if not stripped - proto header flags)
+(uleb128) numlines optional (if not stripped - proto header flags)
+--------------------
+bcinsn
+uv
+kgc
+knum
+debuginfo
+========================

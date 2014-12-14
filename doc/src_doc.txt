@@ -1,0 +1,13 @@
+** ljd.rawdump.parser - raw luajit bytecode parser
+
+   State class includes flags and list of prototypes
+   parser() returns header and first entry in the list
+   of prototypes. Must be only 1 prototype in thist list?
+   (see lua/luajit bytecode dump format)
+   
+** ljd.rawdump.header - header and flags class
+
+** ljd.bytecode.prototype - prototype class
+   prototype.instructions - list of instructions
+
+** ljd.ast.builder - syntax tree builder
