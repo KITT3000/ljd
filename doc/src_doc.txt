@@ -11,3 +11,12 @@
    prototype.instructions - list of instructions
 
 ** ljd.ast.builder - syntax tree builder
+   everything is written into the contents member of the node
+   (each function has a starting node)
+   1. [blockenize] divides code into blocks (code w/o branching)
+      each block is nodes.Block() class (start-end address, contents, etc)
+      which are then written in the State() class
+   2. [establish_warps] build warps for each block -
+      there still is a branching instruction at the end of the warp
+      determines the branching instruction type at the end of the warp
+   3. builds statements for each block
