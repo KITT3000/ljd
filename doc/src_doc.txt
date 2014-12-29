@@ -10,13 +10,23 @@
 ** ljd.bytecode.prototype - prototype class
    prototype.instructions - list of instructions
 
+** ljd.ast.nodes - description of different types of nodes
+   of a tree.
+
 ** ljd.ast.builder - syntax tree builder
    everything is written into the contents member of the node
    (each function has a starting node)
+
    1. [blockenize] divides code into blocks (code w/o branching)
-      each block is nodes.Block() class (start-end address, contents, etc)
+      each block is nodes.Block() class (start-end address, contents, warp, etc)
       which are then written in the State() class
    2. [establish_warps] build warps for each block -
       there still is a branching instruction at the end of the warp
       determines the branching instruction type at the end of the warp
    3. builds statements for each block
+
+   The builder returns the function node (see nodes submodule),
+   which contains all the blocks of the function. A block is a linear
+   segment of code (w/o branching) built of parsed & recognized statements.
+   nodes.Block() - contains all the statements (parsed instructions as well
+   as the warp instruction in a seperate "warp" member.
