@@ -720,6 +720,12 @@ def _get_operator(block, true, end):
 			is_true = True
 		else:
                         # this works strange
+                        # There are so many different types of
+                        # assignment sources, we are clearly missing
+                        # something here, in this if - elif block
+                        # so check the type before we crash
+                        # with backtrace :)
+                        print(type(src))
                         # assert src is None
 
 			is_true = block.warp.target == true
