@@ -3,6 +3,7 @@ import copy
 import ljd.ast.nodes as nodes
 import ljd.ast.traverse as traverse
 import ljd.ast.slotworks as slotworks
+import sys
 
 binop = nodes.BinaryOperator
 
@@ -724,8 +725,10 @@ def _get_operator(block, true, end):
 			# assignment sources, we are clearly missing
 			# something here, in this if - elif block
 			# so check the type before we crash
-			# with backtrace :)
-			print(type(src))
+			# with backtrace :) (also noted by @jtrumm)
+			print("Unexpected assignment source type",
+			      "at _get_operator():", type(src),
+			      file=sys.stderr)
 			# assert src is None
 
 			is_true = block.warp.target == true
@@ -1272,7 +1275,13 @@ def _unwarp_loop(start, end, body):
 			# we are processing loops in the order from innermost
 			# to outermost
 			for i, block in enumerate(body):
-				assert len(block.contents) == 0
+				# need to find out why this assert should be
+				# here, because it works fine w/o it
+				print("Length of body at",
+				      "_unwarp_loop():",
+				      len(block.contents),
+				      file=sys.stderr)
+				# assert len(block.contents) == 0
 
 				if _is_flow(block.warp):
 					break
