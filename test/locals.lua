@@ -1,3 +1,5 @@
+-- test idea by weibobo
+
 function foo(x)
    print (x)
    local g = function (x) print (x) end
