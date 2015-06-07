@@ -111,24 +111,33 @@ class _LocalsMarker(traverse.Visitor):
 	def visit_assignment(self, node):
 		src = node.expressions.contents[0]
 		dst = node.destinations.contents[0]
-		# print(type(dst), " = ", type(src))
-		if isinstance(dst, nodes.TableElement):
-			self._state().last_func_assign = None
+		assignment = self._state().last_func_assign
+
+		if (len(node.expressions.contents) != 1
+		    or len(node.destinations.contents) != 1):
 			return
 
-		if isinstance(src, nodes.FunctionDefinition):
-			self._state().last_func_assign = node
-		else:
-			assignment = self._state().last_func_assign
-			self._state().last_func_assign = None
+		if (isinstance(dst, nodes.TableElement)
+		    and assignment is not None):
+			assign_dest = assignment.destinations.contents[0]
+			if src == assign_dest:
+				self._state().last_func_assign = None
 
-			if assignment == None:
-				return
+		elif isinstance(src, nodes.FunctionDefinition):
+			self._state().last_func_assign = node
+
+		elif assignment is not None:
 
 			assign_dest = assignment.destinations.contents[0]
+			if src != assign_dest:
+				return
+
+			self._state().last_func_assign = node
+			# this doesn't belong here
 			assignment.type = nodes.Assignment.T_LOCAL_DEFINITION
+			# #
 			assign_dest.type = nodes.Identifier.T_LOCAL
-			if assign_dest.name == None:
+			if assign_dest.name is None:
 				# stub for validator
 				assign_dest.name = "local_func"
 
