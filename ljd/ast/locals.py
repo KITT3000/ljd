@@ -129,10 +129,9 @@ class _LocalsMarker(traverse.Visitor):
 		elif assignment is not None:
 
 			assign_dest = assignment.destinations.contents[0]
-			if src != assign_dest:
-				return
 
-			self._state().last_func_assign = node
+			# do not propagate any further
+			self._state().last_func_assign = None
 			# this doesn't belong here
 			assignment.type = nodes.Assignment.T_LOCAL_DEFINITION
 			# #
