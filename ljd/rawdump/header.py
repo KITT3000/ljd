@@ -12,6 +12,7 @@ _MAX_VERSION = 0x80
 _FLAG_IS_BIG_ENDIAN = 0b00000001
 _FLAG_IS_STRIPPED = 0b00000010
 _FLAG_HAS_FFI = 0b00000100
+_FLAG_FR2 = 0b00001000
 
 
 class Flags():
@@ -19,6 +20,7 @@ class Flags():
 		self.is_big_endian = False
 		self.is_stripped = False
 		self.has_ffi = False
+		self.fr2 = False
 
 
 class Header():
@@ -73,6 +75,9 @@ def _read_flags(parser, header):
 
 	header.flags.has_ffi = bits & _FLAG_HAS_FFI
 	bits &= ~_FLAG_HAS_FFI
+
+	header.flags.fr2 = bits & _FLAG_FR2
+	bits &= ~_FLAG_FR2
 
 	if bits != 0:
 		errprint("Unknown flags set: {0:08b}", bits)
